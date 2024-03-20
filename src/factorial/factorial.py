@@ -24,14 +24,21 @@ if len(sys.argv) != 3:
     print("Debe informar dos números para formar un rango.")
     sys.exit()
 else:
-    start = int(sys.argv[1])
-    end = int(sys.argv[2])
+    desde = int(sys.argv[1])
+    hasta = int(sys.argv[2])
 
-    if start > end:
-        print("El primer número debe ser menor o igual que el segundo número.")
+    if desde < 1:
+        print("El límite inferior (desde) debe ser al menos 1.")
+        sys.exit()
+    elif hasta > 60:
+        print("El límite superior (hasta) no puede ser mayor que 60.")
+        sys.exit()
+    elif desde > hasta:
+        print("El límite inferior (desde) no puede ser mayor que el límite superior (hasta).")
         sys.exit()
     
-    print("Factoriales dentro del rango", start, "-", end, ":")
-    for num in range(start, end + 1):
+    # Calcular los factoriales dentro del rango establecido
+    print("Factoriales dentro del rango", desde, "-", hasta, ":")
+    for num in range(desde, hasta + 1):
         print("Factorial de", num, "es", factorial(num))
 
