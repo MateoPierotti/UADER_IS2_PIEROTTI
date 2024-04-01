@@ -1,12 +1,19 @@
 import openai
+import pyreadline as readline
+
 api_key = ""
 
 openai.api_key = api_key
+
+last_query = ""
+
 try:
     try:
-        usertask = input("Ingrese el propósito de su consulta: ")
-        context = input("Ingrese el contexto de su consulta: ")
+        usertask = ""
+        context = ""    
         userquery = input("Ingrese su consulta: ")
+        if userquery == "" and last_query:
+            userquery = last_query
         if userquery.strip() == "" and usertask.strip() == "" and context.strip() == "" :
             raise ValueError("Por favor, ingrese una consulta válida. (Complete todos los campos solicitados)")
     except ValueError as ve:
@@ -35,15 +42,13 @@ try:
             frequency_penalty=0,
             presence_penalty=0
             )
-            # Concatenar las variables en una sola cadena
-            consulta_completa = f"Propósito: {usertask} Contexto: {context} Consulta: {userquery}"
 
-            # Imprimir la consulta completa
-            print("You: ", consulta_completa)
+   
+            print("You: ", userquery)
             
             print("chatGPT: ",response.choices[0].message.content)
         except Exception as e:
             print(f"Error durante la invocación de la API de OpenAI: {e}")
-    
+        last_query = userquery
 except Exception as ex:
     print(f"Error general durante la ejecución del programa: {ex}")
