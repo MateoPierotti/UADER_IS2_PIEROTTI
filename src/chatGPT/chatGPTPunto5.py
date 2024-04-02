@@ -14,11 +14,11 @@ def invoke_openai_api(model, messages):
     return openai.ChatCompletion.create(
         model=model,
         messages=messages,
-        temperature=1,
-        max_tokens=1000,
-        top_p=1,
-        frequency_penalty=0,
-        presence_penalty=0
+        temperature=1,  # Temperatura para la generación del texto (1 es la configuración predeterminada)
+        max_tokens=1000,  # Máximo número de tokens para generar la respuesta
+        top_p=1,  # Probabilidad acumulativa máxima para elegir entre las palabras más probables
+        frequency_penalty=0,  # Penalización de frecuencia para evitar la repetición de palabras
+        presence_penalty=0  # Penalización de presencia para evitar la repetición de temas
     )
 
 def main(api_key):
@@ -29,16 +29,16 @@ def main(api_key):
     initialize_openai(api_key)
     
     # Inicializa variables para el modo conversación
-    last_query = ""
-    conversation_mode = False
-    conversation_buffer = []
+    last_query = ""  # Almacena la última consulta del usuario
+    conversation_mode = False  # Indica si el modo conversación está activado
+    conversation_buffer = []  # Almacena las conversaciones en modo conversación
 
     try:
         # Loop principal del programa
         while True:
             try:
-                usertask = " "
-                context = ""
+                usertask = " "  # Tarea del usuario, no se utiliza actualmente
+                context = ""  # Contexto de la conversación, se utiliza para mantener la coherencia en modo conversación
 
                 # Si hay conversaciones anteriores en el buffer, se usa como contexto
                 if conversation_buffer:
@@ -69,9 +69,9 @@ def main(api_key):
                     response = invoke_openai_api(
                         model="gpt-3.5-turbo-0125",
                         messages=[
-                            {"role": "system", "content": context},
-                            {"role": "user", "content" : usertask},
-                            {"role": "user", "content": userquery}
+                            {"role": "system", "content": context},  # Contexto del sistema (conversaciones anteriores)
+                            {"role": "user", "content" : usertask},  # Tarea del usuario (no utilizado actualmente)
+                            {"role": "user", "content": userquery}  # Consulta del usuario
                         ]
                     )
 
