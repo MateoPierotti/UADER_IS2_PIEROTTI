@@ -1,5 +1,16 @@
-import openai
+"""
+Este programa implementa un chatbot interactivo utilizando la API 
+de OpenAI para generar respuestas basadas en la entrada del usuario.
+
+El chatbot puede funcionar en dos modos:
+1. Modo normal: El usuario ingresa una consulta y el chatbot responde.
+2. Modo de conversación: El chatbot recuerda las consultas anteriores 
+y las utiliza para contextualizar las respuestas en la conversación.
+
+Para usar este programa, se necesita una clave de API de OpenAI válida.
+"""
 import sys
+import openai
 
 def initialize_openai(api_key):
     """
@@ -42,15 +53,18 @@ def main(api_key):
                 if "--convers" in sys.argv:
                     conversation_mode = True
                     print("Modo conversación activado.")
-                print("para iniciar el modo de conversacion escriba el siguiente codigo en el terminal: python chatGPT.py --convers")
+                print()
+                print("para iniciar el modo de conversacion escriba")
+                print("el siguiente codigo en el terminal: python chatGPT.py --convers")
                 print("para salir del programa ingrese la combinacion de teclas 'Control + C'")
+                print()
                 userquery = input("Ingrese su consulta: ")
 
                 if conversation_mode and userquery == "" and last_query:
                     userquery = last_query
 
                 if userquery.strip() == "" and usertask.strip() == "" and context.strip() == "":
-                    raise ValueError("Por favor, ingrese una consulta válida. (Complete todos los campos solicitados)")
+                    raise ValueError("Por favor, ingrese una consulta válida.")
             except ValueError as ve:
                 print(f"Error en la aceptación de la consulta: {ve}")
             else:
@@ -70,7 +84,7 @@ def main(api_key):
                     if conversation_mode:
                         conversation_buffer.append((userquery, response.choices[0].message.content))
 
-                except Exception as e:
+                except openai.OpenAIError as e:
                     print(f"Error durante la invocación de la API de OpenAI: {e}")
 
                 last_query = userquery
@@ -79,5 +93,5 @@ def main(api_key):
         print("Programa terminado.")
 
 if __name__ == "__main__":
-    api_key = ""
-    main(api_key)
+    OPENAI_API_KEY = ""
+    main(OPENAI_API_KEY)
