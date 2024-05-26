@@ -1,9 +1,14 @@
 import json
 import sys
 
-class JSONReader:
-    def __init__(self, file_path):
-        self.file_path = file_path
+class JSONReaderSingleton:
+    _instance = None
+
+    def __new__(cls, file_path):
+        if cls._instance is None:
+            cls._instance = super().__new__(cls)
+            cls._instance.file_path = file_path
+        return cls._instance
 
     def read_json(self):
         try:
@@ -52,7 +57,7 @@ if __name__ == "__main__":
     json_file = sys.argv[1]
     json_key = sys.argv[2]
 
-    json_reader = JSONReader(json_file)
+    json_reader = JSONReaderSingleton(json_file)
     token_formatter = TokenFormatter()
     json_parser = JSONParser()
     program = Program(json_reader, token_formatter, json_parser)
