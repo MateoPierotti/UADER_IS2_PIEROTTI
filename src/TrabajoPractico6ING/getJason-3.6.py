@@ -32,7 +32,8 @@ class JSONParser:
             return json_obj[key]
         except KeyError:
             raise KeyError(f"Error: La clave {key} no se encontró en el archivo JSON.")
-
+        
+# La nueva implementación Program utiliza las clases y métodos del diseño orientado a objetos.
 class Program:
     def __init__(self, json_reader, token_formatter, json_parser):
         self.json_reader = json_reader
@@ -47,6 +48,28 @@ class Program:
             print(formatted_token)
         except Exception as e:
             print(f"Error del programa: {e}")
+            sys.exit(1)
+
+# ProgramaOriginal encapsula la funcionalidad del programa original.
+class ProgramaOriginal:
+    @staticmethod
+    def run(json_file, json_key):
+        try:
+            with open(json_file, "r") as myfile:
+                data = myfile.read()
+            obj = json.loads(data)
+            print(f"{1.0}{obj[json_key]}")
+        except FileNotFoundError:
+            print(f"Error: El archivo {json_file} no se encontró.")
+            sys.exit(1)
+        except KeyError:
+            print(f"Error: La clave {json_key} no se encontró en el archivo JSON.")
+            sys.exit(1)
+        except json.JSONDecodeError:
+            print("Error: El archivo no es un JSON válido.")
+            sys.exit(1)
+        except Exception as e:
+            print(f"Error inesperado: {e}")
             sys.exit(1)
 
 def print_usage():
