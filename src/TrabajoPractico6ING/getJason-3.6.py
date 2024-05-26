@@ -30,9 +30,11 @@ class JSONReaderSingleton:
                 data = myfile.read()
             return json.loads(data)
         except FileNotFoundError:
-            raise FileNotFoundError(f"Error: El archivo {self.file_path} no se encontró.")
+            print(f"Error del programa: El archivo {self.file_path} no se encontró.")
+            sys.exit(1)
         except json.JSONDecodeError:
-            raise ValueError("Error: El archivo no es un JSON válido.")
+            print("Error del programa: El archivo no es un JSON válido.")
+            sys.exit(1)
 
 class TokenFormatter:
     """
@@ -57,8 +59,8 @@ class JSONParser:
         try:
             return json_obj[key]
         except KeyError:
-            raise KeyError(f"Error: La clave {key} no se encontró en el archivo JSON.")
-
+            print(f"Error del programa: La clave {key} no se encontró en el archivo JSON.")
+            sys.exit(1)
 
 class Program:
     """
@@ -83,33 +85,6 @@ class Program:
             print(formatted_token)
         except Exception as e:
             print(f"Error del programa: {e}")
-            sys.exit(1)
-
-class ProgramaOriginal:
-    """
-    Clase que encapsula la funcionalidad del programa original.
-    """
-    @staticmethod
-    def run(json_file, json_key):
-        """
-        Método estático que ejecuta la funcionalidad del programa original.
-        """
-        try:
-            with open(json_file, "r") as myfile:
-                data = myfile.read()
-            obj = json.loads(data)
-            print(f"{1.0}{obj[json_key]}")
-        except FileNotFoundError:
-            print(f"Error: El archivo {json_file} no se encontró.")
-            sys.exit(1)
-        except KeyError:
-            print(f"Error: La clave {json_key} no se encontró en el archivo JSON.")
-            sys.exit(1)
-        except json.JSONDecodeError:
-            print("Error: El archivo no es un JSON válido.")
-            sys.exit(1)
-        except Exception as e:
-            print(f"Error inesperado: {e}")
             sys.exit(1)
 
 def print_usage():
@@ -141,4 +116,3 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"Error del programa: {e}")
         sys.exit(1)
-
