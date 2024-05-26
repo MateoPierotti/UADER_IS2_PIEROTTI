@@ -46,19 +46,32 @@ class Program:
             formatted_token = self.token_formatter.format_token(str(value))
             print(formatted_token)
         except Exception as e:
-            print(f"Error inesperado: {e}")
+            print(f"Error del programa: {e}")
             sys.exit(1)
 
+def print_usage():
+    print("Uso: python programa.py <archivo_json> <clave>")
+    print("Ejemplo: python programa.py archivo.json clave")
+
 if __name__ == "__main__":
-    if len(sys.argv) != 3 or sys.argv[1] == '-h':
-        print("Para usar el programa ejecute el siguiente comando: {path ejecutable}/getJason.pyc {path archivo JSON}/{nombre archivo JSON}.json {clave}")
+    if len(sys.argv) != 3:
+        print("Error del programa: Se requieren exactamente dos argumentos.")
+        print_usage()
         sys.exit(1)
+    
+    if sys.argv[1] == '-h':
+        print_usage()
+        sys.exit(0)
     
     json_file = sys.argv[1]
     json_key = sys.argv[2]
 
-    json_reader = JSONReaderSingleton(json_file)
-    token_formatter = TokenFormatter()
-    json_parser = JSONParser()
-    program = Program(json_reader, token_formatter, json_parser)
-    program.run(json_key)
+    try:
+        json_reader = JSONReaderSingleton(json_file)
+        token_formatter = TokenFormatter()
+        json_parser = JSONParser()
+        program = Program(json_reader, token_formatter, json_parser)
+        program.run(json_key)
+    except Exception as e:
+        print(f"Error del programa: {e}")
+        sys.exit(1)
