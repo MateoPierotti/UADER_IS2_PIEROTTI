@@ -31,53 +31,43 @@ class JSONReaderSingleton:
             print("Error del programa: El archivo no es un JSON válido.")
             sys.exit(1)
 
-class TokenFormatter:
-    """
-    Clase que proporciona un método para formatear un token.
-    """
-    @staticmethod
-    def format_token(token):
-        """
-        Método para formatear un token.
-        """
-        return f"{token}"
-
 class JSONParser:
     """
-    Clase que proporciona un método para parsear un objeto JSON y obtener un valor asociado a una clave.
+    Clase que proporciona un método para parsear un objeto JSON y obtener información sobre los bancos.
     """
     @staticmethod
-    def parse_json(json_obj, bank_name):
+    def parse_json(json_obj):
         """
-        Método para parsear un objeto JSON y obtener un token asociado a un banco.
+        Método para parsear un objeto JSON y obtener información sobre los bancos.
         """
         try:
-            return json_obj["bancos"][bank_name]["token"]
+            return json_obj["bancos"]
         except KeyError:
-            print(f"Error del programa: El banco '{bank_name}' no se encontró en el archivo JSON.")
+            print("Error del programa: No se encontró información sobre los bancos en el archivo JSON.")
             sys.exit(1)
 
 class Program:
     """
     Clase que representa el programa principal.
     """
-    def __init__(self, json_reader, token_formatter, json_parser):
+    def __init__(self, json_reader, json_parser):
         """
         Constructor de la clase Program.
         """
         self.json_reader = json_reader
-        self.token_formatter = token_formatter
         self.json_parser = json_parser
 
-    def run(self, bank_name):
+    def run(self):
         """
         Método principal que ejecuta el programa.
         """
         try:
             json_obj = self.json_reader.read_json()
-            token = self.json_parser.parse_json(json_obj, bank_name)
-            formatted_token = self.token_formatter.format_token(token)
-            print(f"Token para el banco '{bank_name}': {formatted_token}")
+            bancos_info = self.json_parser.parse_json(json_obj)
+            banco_max_saldo = max(bancos_info.values(), key=lambda x: x["saldo"])
+            nombre_banco_max_saldo = banco_max_saldo["nombre"]
+            saldo_max_saldo = banco_max_saldo["saldo"]
+            print(f"El banco con el mayor saldo es '{nombre_banco_max_saldo}' con un saldo de ${saldo_max_saldo} con este se realiza el pago.")
         except Exception as e:
             print(f"Error del programa: {e}")
             sys.exit(1)
@@ -86,8 +76,8 @@ def print_usage():
     """
     Función para imprimir el mensaje de uso del programa.
     """
-    print("Uso: python programa.py <archivo_json> <nombre_banco>")
-    print("Ejemplo: python programa.py archivo.json BancoA")
+    print("Uso: python programa.py <archivo_json>")
+    print("Ejemplo: python programa.py archivo.json")
     print("Para mostrar la versión del programa, ejecute: python programa.py -v")
     print("Para obtener ayuda, ejecute: python programa.py -h")
 
@@ -100,20 +90,18 @@ if __name__ == "__main__":
         print_usage()
         sys.exit(0)
 
-    if len(sys.argv) != 3:
-        print("Error del programa: Se requieren exactamente dos argumentos.")
+    if len(sys.argv) != 2:
+        print("Error del programa: Se requiere exactamente un argumento.")
         print_usage()
         sys.exit(1)
     
     json_file_path = sys.argv[1]
-    bank_name = sys.argv[2]
 
     try:
         json_reader = JSONReaderSingleton(json_file_path)
-        token_formatter = TokenFormatter()
         json_parser = JSONParser()
-        program = Program(json_reader, token_formatter, json_parser)
-        program.run(bank_name)
+        program = Program(json_reader, json_parser)
+        program.run()
     except Exception as e:
         print(f"Error del programa: {e}")
         sys.exit(1)
