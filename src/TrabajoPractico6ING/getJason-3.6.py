@@ -1,12 +1,7 @@
-"""
-Este programa permite leer un archivo JSON y extraer un valor asociado a una clave.
-Es propiedad de la compañía UADERFCyT-IS2©2024, todos los derechos reservados.
-"""
-
 import json
 import sys
 
-VERSION = "versión 1.1"
+VERSION = "versión 1.2"
 
 class JSONReaderSingleton:
     """
@@ -45,21 +40,21 @@ class TokenFormatter:
         """
         Método para formatear un token.
         """
-        return f"{1.0}{token}"
+        return f"{token}"
 
 class JSONParser:
     """
     Clase que proporciona un método para parsear un objeto JSON y obtener un valor asociado a una clave.
     """
     @staticmethod
-    def parse_json(json_obj, key):
+    def parse_json(json_obj, bank_name):
         """
-        Método para parsear un objeto JSON y obtener un valor asociado a una clave.
+        Método para parsear un objeto JSON y obtener un token asociado a un banco.
         """
         try:
-            return json_obj[key]
+            return json_obj["bancos"][bank_name]["token"]
         except KeyError:
-            print(f"Error del programa: La clave {key} no se encontró en el archivo JSON.")
+            print(f"Error del programa: El banco '{bank_name}' no se encontró en el archivo JSON.")
             sys.exit(1)
 
 class Program:
@@ -74,15 +69,15 @@ class Program:
         self.token_formatter = token_formatter
         self.json_parser = json_parser
 
-    def run(self, json_key):
+    def run(self, bank_name):
         """
         Método principal que ejecuta el programa.
         """
         try:
             json_obj = self.json_reader.read_json()
-            value = self.json_parser.parse_json(json_obj, json_key)
-            formatted_token = self.token_formatter.format_token(str(value))
-            print(formatted_token)
+            token = self.json_parser.parse_json(json_obj, bank_name)
+            formatted_token = self.token_formatter.format_token(token)
+            print(f"Token para el banco '{bank_name}': {formatted_token}")
         except Exception as e:
             print(f"Error del programa: {e}")
             sys.exit(1)
@@ -91,8 +86,8 @@ def print_usage():
     """
     Función para imprimir el mensaje de uso del programa.
     """
-    print("Uso: python programa.py <archivo_json> <clave>")
-    print("Ejemplo: python programa.py archivo.json clave")
+    print("Uso: python programa.py <archivo_json> <nombre_banco>")
+    print("Ejemplo: python programa.py archivo.json BancoA")
     print("Para mostrar la versión del programa, ejecute: python programa.py -v")
     print("Para obtener ayuda, ejecute: python programa.py -h")
 
@@ -111,14 +106,14 @@ if __name__ == "__main__":
         sys.exit(1)
     
     json_file_path = sys.argv[1]
-    json_key = sys.argv[2]
+    bank_name = sys.argv[2]
 
     try:
         json_reader = JSONReaderSingleton(json_file_path)
         token_formatter = TokenFormatter()
         json_parser = JSONParser()
         program = Program(json_reader, token_formatter, json_parser)
-        program.run(json_key)
+        program.run(bank_name)
     except Exception as e:
         print(f"Error del programa: {e}")
         sys.exit(1)

@@ -1,4 +1,17 @@
-{ 
-        "token1" : "C598-ECF9-F0F7-881A",
-        "token2" : "C598-ECF9-F0F7-881B"
-}
+{
+        "bancos": {
+          "Galicia": {
+            "nombre": "Galicia",
+            "token": "ABCD1234"
+          },
+          "Entre Rios": {
+            "nombre": "Entre Rios",
+            "token": "EFGH5678"
+          },
+          "Santander": {
+            "nombre": "Santander",
+            "token": "IJKL91011"
+          }
+        }
+      }
+
