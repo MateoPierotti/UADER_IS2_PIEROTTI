@@ -6,17 +6,17 @@ Es propiedad de la compañía UADERFCyT-IS2©2024, todos los derechos reservados
 import json
 import sys
 
+VERSION = "versión 1.1"
+
 class JSONReaderSingleton:
     """
     Clase que implementa un patrón Singleton para leer un archivo JSON.
     """
-    _instance = None
-
     def __new__(cls, file_path):
         """
         Método para crear una única instancia de la clase.
         """
-        if cls._instance is None:
+        if not hasattr(cls, '_instance'):
             cls._instance = super().__new__(cls)
             cls._instance.file_path = file_path
         return cls._instance
@@ -26,7 +26,7 @@ class JSONReaderSingleton:
         Método para leer y cargar el contenido del archivo JSON.
         """
         try:
-            with open(self.file_path, "r") as myfile:
+            with open(self.file_path, "r", encoding="utf-8") as myfile:
                 data = myfile.read()
             return json.loads(data)
         except FileNotFoundError:
@@ -93,22 +93,28 @@ def print_usage():
     """
     print("Uso: python programa.py <archivo_json> <clave>")
     print("Ejemplo: python programa.py archivo.json clave")
+    print("Para mostrar la versión del programa, ejecute: python programa.py -v")
+    print("Para obtener ayuda, ejecute: python programa.py -h")
 
 if __name__ == "__main__":
+    if len(sys.argv) == 2 and sys.argv[1] == '-v':
+        print(f"Versión del programa: {VERSION}")
+        sys.exit(0)
+    
+    if len(sys.argv) == 2 and sys.argv[1] == '-h':
+        print_usage()
+        sys.exit(0)
+
     if len(sys.argv) != 3:
         print("Error del programa: Se requieren exactamente dos argumentos.")
         print_usage()
         sys.exit(1)
     
-    if sys.argv[1] == '-h':
-        print_usage()
-        sys.exit(0)
-    
-    json_file = sys.argv[1]
+    json_file_path = sys.argv[1]
     json_key = sys.argv[2]
 
     try:
-        json_reader = JSONReaderSingleton(json_file)
+        json_reader = JSONReaderSingleton(json_file_path)
         token_formatter = TokenFormatter()
         json_parser = JSONParser()
         program = Program(json_reader, token_formatter, json_parser)
