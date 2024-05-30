@@ -3,18 +3,18 @@
 "bancos": {
         "Galicia": {
         "nombre": "Galicia",
-        "saldo": 5000,
-        "token": "ABCD1234"
+        "saldo": 1000,
+        "token": "token1"
         },
         "Entre Rios": {
         "nombre": "Entre Rios",
-        "saldo": 30000,
-        "token": "EFGH5678"
+        "saldo": 2000,
+        "token": "token2"
         },
         "Santander": {
         "nombre": "Santander",
         "saldo": 2000,
-        "token": "IJKL91011"
+        "token": "token3"
         }
 }
 }
