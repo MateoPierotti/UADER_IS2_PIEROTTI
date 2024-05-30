@@ -3,6 +3,7 @@ import sys
 
 VERSION = "versión 1.2"
 
+
 class JSONReaderSingleton:
     """
     Clase que implementa un patrón Singleton para leer un archivo JSON.
@@ -38,6 +39,7 @@ class JSONReaderSingleton:
         Método para obtener la información de los bancos.
         """
         return self.banks_info
+
 
 class Bank:
     """
@@ -76,6 +78,7 @@ class Bank:
     def __str__(self):
         return f"Banco {self.name} - Saldo: {self.balance} - Token: {self.token}"
 
+
 class Payment:
     """
     Clase que representa un pago realizado.
@@ -87,7 +90,9 @@ class Payment:
         self.token = token
 
     def __str__(self):
-        return f"Pedido {self.order_number}: Banco {self.bank_name}, Monto {self.amount}, Token {self.token}"
+        return (f"Pedido {self.order_number}: Banco {self.bank_name}, "
+                f"Monto {self.amount}, Token {self.token}")
+
 
 class PaymentHistory:
     """
@@ -104,6 +109,7 @@ class PaymentHistory:
         Método para iterar sobre los pagos en el historial.
         """
         return iter(self.payments)
+
 
 class PaymentHandler:
     """
@@ -124,11 +130,11 @@ class PaymentHandler:
             payment_history.add_payment(payment)
             print(f"Pago de {amount} procesado por {self.bank.name}. Nuevo saldo: {self.bank.balance}")
             return True
-        elif self.successor is not None:
+        if self.successor is not None:
             return self.successor.handle(amount, order_number, payment_history)
-        else:
-            print(f"Error: No se pudo procesar el pago de {amount}. Saldo insuficiente.")
-            return False
+        print(f"Error: No se pudo procesar el pago de {amount}. Saldo insuficiente.")
+        return False
+
 
 class BankChain:
     """
@@ -145,9 +151,9 @@ class BankChain:
         """
         if self.chain is not None:
             return self.chain.handle(amount, order_number, payment_history)
-        else:
-            print("Error: No hay bancos disponibles para procesar el pago.")
-            return False
+        print("Error: No hay bancos disponibles para procesar el pago.")
+        return False
+
 
 class Program:
     """
@@ -178,21 +184,23 @@ class Program:
                 print("Error: Opción no válida.")
                 print_usage()
                 sys.exit(1)
-        except Exception as e:
-            print(f"Error del programa: {e}")
+        except Exception as err:
+            print(f"Error del programa: {err}")
             sys.exit(1)
+
 
 def make_multiple_payments(program):
     """
     Función para realizar múltiples pagos y almacenarlos en el historial de pagos.
     """
     try:
-        for i in range(5):
+        for _ in range(5):
             program.order_number += 1
             amount = 500.0  # Monto predeterminado
             program.bank_chain.process_payment(amount, program.order_number, program.payment_history)
     except ValueError:
         print("Error: El monto ingresado no es válido.")
+
 
 def print_usage():
     """
@@ -201,14 +209,15 @@ def print_usage():
     print("Uso: python programa.py <archivo_json> <opcion> [<monto>]")
     print("Opciones:")
     print("  auto           - Seleccionar automáticamente un banco para procesar el pago proporcionando el monto del pago.")
-    print("  list  - Prueba  Realizar múltiples pagos y almacenarlos en el historial de pagos.")
+    print("  list           - Realizar múltiples pagos y almacenarlos en el historial de pagos.")
     print("Ejemplo: python programa.py archivo.json auto 100.0")
+
 
 if __name__ == "__main__":
     if len(sys.argv) == 2 and sys.argv[1] == '-v':
         print(f"Versión del programa: {VERSION}")
         sys.exit(0)
-    
+
     if len(sys.argv) == 2 and sys.argv[1] == '-h':
         print_usage()
         sys.exit(0)
@@ -217,10 +226,10 @@ if __name__ == "__main__":
         print("Error del programa: Número de argumentos inválido.")
         print_usage()
         sys.exit(1)
-    
+
     json_file_path = sys.argv[1]
     option = sys.argv[2]
-    amount = sys.argv[3] if len(sys.argv) == 4 else None
+    payment_amount = sys.argv[3] if len(sys.argv) == 4 else None
 
     try:
         # Inicializa los bancos con sus respectivos saldos y tokens
@@ -235,7 +244,7 @@ if __name__ == "__main__":
 
         # Ejecuta el programa
         program = Program(bank_chain, payment_history)
-        program.run(option, amount)
-    except Exception as e:
-        print(f"Error del programa: {e}")
+        program.run(option, payment_amount)
+    except Exception as err:
+        print(f"Error del programa: {err}")
         sys.exit(1)
